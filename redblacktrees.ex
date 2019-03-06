@@ -37,7 +37,12 @@ defmodule RedBlackTrees do
 				{:four, k, k1, k2, {:leaf, k, v}, l1, l2, l3}
 
 			k <= k2 ->
-				{:four, k1, k, k2, l1, {:leaf, k, v}}
+				{:four, k1, k, k2, l1, {:leaf, k, v}, l2, l3}
+
+			k <= k3 ->
+				{:four, k1, k2, k, k3, l1, l2, {:leaf, k, v}, l3}
+			true ->
+				{:four, k1, k2, k3, l1, l2, l3, {:leaf, k, v}}
 		end
 
 	end
