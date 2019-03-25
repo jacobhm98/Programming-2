@@ -45,5 +45,19 @@ defmodule RedBlackTrees do
 				{:four, k1, k2, k3, l1, l2, l3, {:leaf, k, v}}
 		end
 
+	def insertf(k, v, {:two, k1, left, right}) do
+		cond do
+			k <= k1 ->
+				case insertf(k, v, left) do
+					{:four, q1, q2, q3, t1, t2, t3, t4} ->
+						{:three, q2, q4, {:two, q1, t1, t2}, {:two, q3, t3, t4}, right}
+
+					updated ->
+						{:two, k1, updated, right}
+				end
+			true ->
+				case insertf(k, v, right) do 
+					{:four, q1, q2, q3, t1, t2, t3, t4} ->
+						
 	end
 end
