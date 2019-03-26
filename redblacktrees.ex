@@ -1,8 +1,8 @@
 defmodule RedBlackTrees do
 	@moduledoc """
-	This is an unfinished module for creating red black trees. It currently handles the insert operation
-	with null trees, leaves, two nodes consisting of leaves, and three nodes consisting of leaves. May be finished
-	later, however was done as a form of exam studying. So don't count on it.
+	This is an unfinished module for creating red black trees. It is capable of building up arbitrary size trees
+	and representing them as tuples. We can however not do much with the trees except look at them :).
+	Exercise in pattern matching.
 	"""
 	def insertf(key, value, nil)do
 		{:leaf, key, value}
@@ -64,6 +64,48 @@ defmodule RedBlackTrees do
 					updated ->
 						{:two, left, updated}
 				end
+		end
+	end
+
+	def insertf(k, v, {:three, k1, k2, left, middle, right}) do
+		cond do
+			k <= k1 ->
+				case insertf(k, v, left) do
+					{:four, q1, q2, q3, t1, t2, t3, t4} ->
+						{:four, q2, k1, k2, {:two, q1, t1, t2}, {:two, q3, t3, t4}, middle, right}
+
+					updated ->
+						{:three, k1, k2, updated, middle, right}
+				end
+
+			k <= k2 ->
+				case insertf(k, v, middle) do
+					{:four, q1, q2, q3, t1, t2, t3, t4} ->
+						{:four, k1, q2, k2, left, {:two, q1, t1, t2}, {:two, q3, t3, t4}, right}
+
+					updated ->
+						{:three, k1, k2, left, updated, right}
+				end
+
+			true ->
+				case insertf(k, v, right) do
+					{:four, q1, q2, q3, t1, t2, t3, t4} ->
+						{:four, k1, k2, q2, left, middle, {:two, q1, t1, t2}, {:two, q3, t3, t4}}
+
+					updated ->
+						{:three, k1, k2, left, middle, updated}
+				end
+
+		end
+	end
+
+	def insert(key, value, root) do
+		case insertf(key, value, root) do
+			{:four, q1, q2, q3, t1, t2, t3, t4} ->
+				{:two, q2, {:two, q1, t1, t2}, {:two, q3, t3, t4}}
+
+			updated ->
+				updated
 		end
 	end
 end
