@@ -24,11 +24,42 @@ defmodule Huffman do
 
 	def tree(sample) do
     	freq = freq(sample)
+    	sort(freq)
     	huffman(freq)
 	end
 
-	def huffman(freq) do
-  		sort(freq, [])
+	#basecase, if we have iterated through freqList return tree
+	def huffman([], tree) do tree end
+
+	#initialize tree with first element, and continue to build tree up with rest of freq list
+	def huffman([h | t]) do
+		huffman(t, insert(h))
+	end
+	#build up tree element by element
+	def huffman([h | t], tree) do
+		huffman(t, insert(h, tree))
+	end
+
+	#first element accepted, initialized into a tree
+	def insert(initTree) do
+		initTree
+	end
+
+	#construct the tree with the smallest two elements
+	def insert({_, weight1} = element1, {_, weight2} = element2) do
+		{{element2, element1}, weight2 + weight1}
+	end
+
+	#insert an element into the left branch of tree if freq smaller or equal than weight of tree, insert into right branch of tree if greater, return new tree
+	def insert({{_left, _right}, weight} = tree, {_, freq} = element) do
+		case freq <= weight do
+			true ->
+				{{element, tree}, (freq + weight)}
+			false ->
+				{{tree, element}, (freq + weight)}	
+		end
+		
+		
 	end
 
 	def sort(list) do sort(list, []) end
@@ -71,6 +102,10 @@ defmodule Huffman do
     	# To implement...
   	end
 
+
+  	
+  	#Create a frequency list given a sample text of the form {char, frequency}
+  	
   	def freq(sample) do
     	freq(sample, [])
   	end
