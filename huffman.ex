@@ -98,7 +98,7 @@ defmodule Huffman do
   	end
 
   	def encode_table({:leaf, char, freq}, table, path) do
-  		table ++ [char, {path ++ [0]}]
+  		table ++ [char, {path}]
   		
   	end
 
