@@ -37,7 +37,7 @@ defmodule Huffman do
 	end
 	#build up tree element by element
 	def huffman([h | t], tree) do
-		huffman(t, insert(h, tree))
+		huffman(t, insert(tree, h))
 	end
 
 	#first element accepted, initialized into a tree
@@ -45,13 +45,8 @@ defmodule Huffman do
 		initTree
 	end
 
-	#construct the tree with the smallest two elements
-	def insert({_, weight1} = element1, {_, weight2} = element2) do
-		{{element2, element1}, weight2 + weight1}
-	end
-
 	#insert an element into the left branch of tree if freq smaller or equal than weight of tree, insert into right branch of tree if greater, return new tree
-	def insert({{_left, _right}, weight} = tree, {_, freq} = element) do
+	def insert({{_left, _right}, weight} = tree, {_, _, freq} = element) do
 		case freq <= weight do
 			true ->
 				{{element, tree}, (freq + weight)}
@@ -60,6 +55,18 @@ defmodule Huffman do
 		end
 		
 		
+	end
+
+	#construct the tree with the smallest two elements
+	def insert({_, _, weight1} = element1, {_, _, weight2} = element2) do
+		cond do
+			weight1 <= weight2 ->
+				{{element1, element2}, weight1 + weight2}
+
+			true ->
+				{{element2, element1}, weight1 + weight2}
+
+			end
 	end
 
 	def sort(list) do sort(list, []) end
@@ -78,7 +85,7 @@ defmodule Huffman do
 	  		[x]
 	  	end
 
-	  	def sortf(({_, freq} = element), [({_, compFreq}) = head | rest]) when freq > compFreq do
+	  	def sortf((element = {_, _, freq}), [(head = {_, _, compFreq}) | rest]) when freq > compFreq do
 	    	[head | sortf(element, rest)]
 	  	end
 
@@ -87,8 +94,34 @@ defmodule Huffman do
 	  	end
 
   	def encode_table(tree) do
-    	# To implement...
+    	encode_table(tree, [])
   	end
+
+  	def encode_table({:leaf, char, freq}, table, path) do
+  		table ++ [char, {path ++ [0]}]
+  		
+  	end
+
+  	def encode_table({{left, right}, weight}, table) do
+  		cond do
+  			{:leaf, char, _freq} = left ->
+  				encode_table(right, [{char, {0}}], [1])
+
+  			{:leaf, char, _freq} = right ->
+  				encode_table(left, [{char, {1}}], [0])
+  		end
+  	end
+
+  	def encode_table({{left, right}, weight}, table, path) do
+  		cond do
+  			{:leaf, char, _freq} = left ->
+  				encode_table(right, table ++ [{char, {path ++ [0]}}], path ++ [1])
+
+  			{:leaf, char, _freq} = right ->
+  				encode_table(left, table ++ [{char, {path ++ [1]}}], path ++ [0])
+  			end
+  	end
+  	
 
 	def decode_table(tree) do
     	# To implement...
@@ -119,11 +152,11 @@ defmodule Huffman do
   	end
 
   	def incrementFreq(element, [])do
-    	{element, 1}
+    	[{:leaf, element, 1}]
   	end
 
-  	def incrementFreq(element, [{element, count}|tail]) do
-    	[{element, count + 1}|tail]
+  	def incrementFreq(element, [{:leaf, element, count}|tail]) do
+    	[{:leaf, element, count + 1}|tail]
   	end
 
   	def incrementFreq(element, [noMatch | tail]) do
