@@ -15,7 +15,7 @@ defmodule Huffman do
 	def test do
     	sample = text()
     	tree = tree(sample)
-    	#encode = encode_table(tree)
+    	encode = encode_table(tree)
     	#decode = decode_table(tree)
     	#text = text()
     	#seq = encode(text, encode)
@@ -63,35 +63,15 @@ defmodule Huffman do
 
 
 	#given a tree encode_table will create an encoding table. Will contain the characters in the text along with a translation into bits.
-  	def encode_table(tree) do
-    	encode_table(tree, [])
+  	def encode_table(tree) do encode_table(tree, [], []) end
+
+  	def encode_table({:leaf, char, freq}, path, table) do
+  		[char, path] ++ table
+  	end 
+
+  	def encode_table({left, right, _}, path, table) do
+  		encode_table(left, path ++ [0], table)
   	end
-
-  	def encode_table({:leaf, char, freq}, table, path) do
-  		table ++ [{char, path}]	
-  		
-  	end
-
-  	def encode_table({{left, right}, weight}, table) do
-  		cond do
-  			{:leaf, char, _freq} = left ->
-  				encode_table(right, [{char, 0}], [1])
-
-  			{:leaf, char, _freq} = right ->
-  				encode_table(left, [{char, 1}], [0])
-  		end
-  	end
-
-  	def encode_table({{left, right}, weight}, table, path) do
-  		cond do
-  			{:leaf, char, _freq} = left ->
-  				encode_table(right, table ++ [{char, path ++ [0]}], path ++ [1])
-
-  			{:leaf, char, _freq} = right ->
-  				encode_table(left, table ++ [{char, path ++ [1]}], path ++ [0])
-  			end
-  	end
-  	
 
 	def decode_table(tree) do
     	# To implement...
