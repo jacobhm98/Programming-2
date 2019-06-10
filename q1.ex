@@ -26,4 +26,6 @@ defmodule Q1 do
 		list({atom, freq - 1}, tempList ++ [atom])
 	end
 
+	
+
 end
