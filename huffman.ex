@@ -8,14 +8,14 @@ defmodule Huffman do
 		represent english but it is probably not that far off'
 	end
 
-	def text()  do
+	def text  do
 		'this is something that we should encode'
 	end
 
 	def test do
     	sample = text()
     	tree = tree(sample)
-    	encode = encode_table(tree)
+    	#encode = encode_table(tree)
     	#decode = decode_table(tree)
     	#text = text()
     	#seq = encode(text, encode)
@@ -28,47 +28,15 @@ defmodule Huffman do
     	huffman(sorted)
 	end
 
-	#basecase, if we have iterated through freqList return tree
-	def huffman([], tree) do tree end
 
-	#initialize tree with first element, and continue to build tree up with rest of freq list
-	def huffman([h | t]) do
-		huffman(t, insert(h))
-	end
-	#build up tree element by element
-	def huffman([h | t], tree) do
-		huffman(t, insert(tree, h))
+	def huffman([tree | []]) do tree end
+
+	def huffman([{_, _, freq1} = h1, {_, _, freq2} = h2 | rest]) do
+		huffman(sortf({h1, h2, freq1 + freq2}, rest))
 	end
 
-	#first element accepted, initialized into a tree
-	def insert(initTree) do
-		initTree
-	end
 
-	#insert an element into the left branch of tree if freq smaller or equal than weight of tree, insert into right branch of tree if greater, return new tree
-	def insert({{_left, _right}, weight} = tree, {_, _, freq} = element) do
-		case freq <= weight do
-			true ->
-				{{element, tree}, (freq + weight)}
-			false ->
-				{{tree, element}, (freq + weight)}	
-		end
-		
-		
-	end
-
-	#construct the tree with the smallest two elements
-	def insert({_, _, weight1} = element1, {_, _, weight2} = element2) do
-		cond do
-			weight1 <= weight2 ->
-				{{element1, element2}, weight1 + weight2}
-
-			true ->
-				{{element2, element1}, weight1 + weight2}
-
-			end
-	end
-
+	
 	def sort(list) do sort(list, []) end
 
 	#base case, if we have an empty list of unsorted elements, return sorted elements
@@ -100,7 +68,7 @@ defmodule Huffman do
   	end
 
   	def encode_table({:leaf, char, freq}, table, path) do
-  		table ++ [{char, path}]
+  		table ++ [{char, path}]	
   		
   	end
 
