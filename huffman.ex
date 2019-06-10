@@ -13,19 +13,19 @@ defmodule Huffman do
 	end
 
 	def test do
-    	sample = sample()
+    	sample = text()
     	tree = tree(sample)
     	encode = encode_table(tree)
-    	decode = decode_table(tree)
-    	text = text()
-    	seq = encode(text, encode)
-    	decode(seq, decode)
+    	#decode = decode_table(tree)
+    	#text = text()
+    	#seq = encode(text, encode)
+    	#decode(seq, decode)
  	end
 
 	def tree(sample) do
     	freq = freq(sample)
-    	sort(freq)
-    	huffman(freq)
+    	sorted = sort(freq)
+    	huffman(sorted)
 	end
 
 	#basecase, if we have iterated through freqList return tree
@@ -93,32 +93,34 @@ defmodule Huffman do
 	    	[element|sortedList]
 	  	end
 
+
+	#given a tree encode_table will create an encoding table. Will contain the characters in the text along with a translation into bits.
   	def encode_table(tree) do
     	encode_table(tree, [])
   	end
 
   	def encode_table({:leaf, char, freq}, table, path) do
-  		table ++ [char, {path}]
+  		table ++ [{char, path}]
   		
   	end
 
   	def encode_table({{left, right}, weight}, table) do
   		cond do
   			{:leaf, char, _freq} = left ->
-  				encode_table(right, [{char, {0}}], [1])
+  				encode_table(right, [{char, 0}], [1])
 
   			{:leaf, char, _freq} = right ->
-  				encode_table(left, [{char, {1}}], [0])
+  				encode_table(left, [{char, 1}], [0])
   		end
   	end
 
   	def encode_table({{left, right}, weight}, table, path) do
   		cond do
   			{:leaf, char, _freq} = left ->
-  				encode_table(right, table ++ [{char, {path ++ [0]}}], path ++ [1])
+  				encode_table(right, table ++ [{char, path ++ [0]}], path ++ [1])
 
   			{:leaf, char, _freq} = right ->
-  				encode_table(left, table ++ [{char, {path ++ [1]}}], path ++ [0])
+  				encode_table(left, table ++ [{char, path ++ [1]}], path ++ [0])
   			end
   	end
   	
@@ -127,8 +129,20 @@ defmodule Huffman do
     	# To implement...
   	end
 
-  	def encode(text, table) do
-    	# To implement...
+  	def encode([], _) do
+  		[]
+  	end
+
+  	def encode([h | t], table) do
+  		[findMapping(h, table) | encode(t, table)]
+  	end
+
+  	def findMapping(element, [{element, [mapping]} | rest]) do
+		[mapping] 		
+  	end
+
+  	def findMapping(element, [noMatch | rest]) do
+  		findMapping(element, rest)
   	end
 
   	def decode(seq, tree) do
