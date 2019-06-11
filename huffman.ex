@@ -16,10 +16,10 @@ defmodule Huffman do
     	sample = text()
     	tree = tree(sample)
     	encode = encode_table(tree)
-    	#decode = decode_table(tree)
+    	decode = encode
     	#text = text()
     	seq = encode(text, encode)
-    	#decode(seq, decode)
+    	decode(seq, decode)
  	end
 
 	def tree(sample) do
@@ -89,8 +89,23 @@ defmodule Huffman do
   		findMapping(element, t)
   	end
 
-  	def decode(seq, tree) do
-    	# To implement...
+  	def decode([], _) do [] end
+
+  	def decode(seq, decodeTable) do
+    	{char, rest} = decode_char(seq, 1, decodeTable)
+    	[char|decode(rest, decodeTable)]
+  	end
+
+  	def decode_char(seq, n, decodeTable) do
+  		{code, rest} = Enum.split(seq, n)
+
+  		case List.keyfind(decodeTable, code, 1) do
+  			{char, _} ->
+  				{char, rest}
+
+  			nil ->
+  				decode_char(seq, n+1, decodeTable)
+  		end
   	end
 
 
