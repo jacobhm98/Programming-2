@@ -18,7 +18,7 @@ defmodule Huffman do
     	encode = encode_table(tree)
     	#decode = decode_table(tree)
     	#text = text()
-    	#seq = encode(text, encode)
+    	seq = encode(text, encode)
     	#decode(seq, decode)
  	end
 
@@ -66,7 +66,7 @@ defmodule Huffman do
   	def encode_table(tree) do encode_table(tree, [], []) end
 
   	def encode_table({:leaf, char, freq}, path, table) do
-  		[char, path] ++ table
+  		[{char, path}] ++ table
   	end 
 
   	def encode_table({left, right, _}, path, table) do
@@ -77,20 +77,16 @@ defmodule Huffman do
     	# To implement...
   	end
 
-  	def encode([], _) do
-  		[]
+  	def encode([], encodingTable) do [] end
+
+  	def encode([h|t], encodingTable) do
+  		findMapping(h, encodingTable) ++ encode(t, encodingTable)
   	end
 
-  	def encode([h | t], table) do
-  		[findMapping(h, table) | encode(t, table)]
-  	end
+  	def findMapping(element, [{element, path}|t]) do path end
 
-  	def findMapping(element, [{element, [mapping]} | rest]) do
-		[mapping] 		
-  	end
-
-  	def findMapping(element, [noMatch | rest]) do
-  		findMapping(element, rest)
+  	def findMapping(element, [h|t]) do
+  		findMapping(element, t)
   	end
 
   	def decode(seq, tree) do
