@@ -70,7 +70,7 @@ defmodule Huffman do
   	end 
 
   	def encode_table({left, right, _}, path, table) do
-  		encode_table(left, path ++ [0], table)
+  		Enum.concat(encode_table(left, path ++ [0], table), encode_table(right, path ++ [1], table))
   	end
 
 	def decode_table(tree) do
