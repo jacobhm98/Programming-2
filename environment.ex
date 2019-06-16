@@ -8,10 +8,10 @@ defmodule Env do
 	end
 
 	def lookup(id, [{id, str}|rest]) do
-		[{id, str}|lookup(id, rest)]
+		{id, str}
 	end
 
-	def lookup(id, [_h|t]) do
+	def lookup(id, [_|t]) do
 		lookup(id, t)
 	end
 
