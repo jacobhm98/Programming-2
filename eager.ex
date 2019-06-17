@@ -62,19 +62,19 @@ defmodule Eager do
   		eval_expr(exp, env)
 	end
 
-	def eval_seq([{:match, id1, str1} | rest], env) do
+	def eval_seq([{:match, id1, str1} = pattern | rest], env) do
 		case eval_expr(id1, env) do
 	    :error ->
     	  :error
     	{:ok, str} ->
-    	  vars = extract_vars(...)
-    	  env = Env.remove(vars, ...)
+    	  vars = extract_vars(id1)
+    	  env = Env.remove(vars, env)
 
-    		case eval_match(..., ..., ...) do
+    		case eval_match(id1, str1, env) do
         	:fail ->
           	:error
         	{:ok, env} ->
-        	eval_seq(..., ...)
+        	eval_seq(rest, env)
       		end
   		end
 	end
