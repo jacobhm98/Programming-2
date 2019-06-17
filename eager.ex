@@ -50,6 +50,7 @@ defmodule Eager do
 			:fail ->
 				:fail
 			{:ok, _} ->
+				env = Env.add(hp, hs, env)
 				eval_match(tp, ts, env)
 		end
 	end
@@ -99,5 +100,36 @@ defmodule Eager do
 		variables
 	end
 
+	def eval(seq) do
+		eval_seq(seq, [])
+	end
+
 		
+end
+
+defmodule Env do
+	def new() do
+		[]
+	end
+
+	def add(id, str, env) do
+		env ++ [{id, str}]
+	end
+
+	def lookup(id, [{id, str}|rest]) do
+		{id, str}
+	end
+
+	def lookup(id, [_|t]) do
+		lookup(id, t)
+	end
+
+	def lookup(_id, []) do
+		:nil
+	end
+
+	def remove(ids, env) do
+		List.foldr(ids, env, 
+			fn(id, env) -> List.keydelete(env, id, 0) end)
+	end
 end
