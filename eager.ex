@@ -66,17 +66,38 @@ defmodule Eager do
 		case eval_expr(id1, env) do
 	    :error ->
     	  :error
-    	{:ok, } ->
+    	{:ok, str} ->
     	  vars = extract_vars(...)
     	  env = Env.remove(vars, ...)
 
-      case eval_match(..., ..., ...) do
-        :fail ->
-          :error
-        {:ok, env} ->
-          eval_seq(..., ...)
-      end
-  end
-end
+    		case eval_match(..., ..., ...) do
+        	:fail ->
+          	:error
+        	{:ok, env} ->
+        	eval_seq(..., ...)
+      		end
+  		end
+	end
+
+	def extract_vars(patt) do
+		extract_vars(patt, [])
+	end
+
+	def extract_vars({:cons, head, tail}, variables) do
+		extract_vars(tail, extract_vars(head, variables))
+	end
+
+	def extract_vars({:atm, _}, variables) do
+		variables
+	end
+
+	def extract_vars({:var, id}, variables)do
+		[id|variables]
+	end
+
+	def extract_vars({:ignore, _}, variables) do
+		variables
+	end
+
 		
 end
