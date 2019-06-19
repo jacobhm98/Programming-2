@@ -17,7 +17,7 @@ defmodule Eager do
 	    :error ->
 	      :error
 	    {:ok, hs} ->
-	      case eval_expr({:cons, tail}, env) do
+	      case eval_expr(tail, env) do
 	        :error ->
 	          :error
 	        {:ok, ts} ->
@@ -59,25 +59,25 @@ defmodule Eager do
 		:fail
 	end
 
-	def eval_seq([exp], env) do
-  		eval_expr(exp, env)
-	end
-
-	def eval_seq([{:match, id1, str1} = pattern | rest], env) do
-		case eval_expr(id1, env) do
+	def eval_seq([{:match, id, str} = pattern | rest], env) do
+		case eval_expr(str, env) do
 	    :error ->
     	  :error
     	{:ok, str} ->
-    	  vars = extract_vars(id1)
+    	  vars = extract_vars(id)
     	  env = Env.remove(vars, env)
 
-    		case eval_match(id1, str1, env) do
+    		case eval_match(id, str, env) do
         	:fail ->
           	:error
         	{:ok, env} ->
         	eval_seq(rest, env)
       		end
   		end
+	end
+
+	def eval_seq([exp], env) do
+  		eval_expr(exp, env)
 	end
 
 	def extract_vars(patt) do
@@ -96,7 +96,7 @@ defmodule Eager do
 		[id|variables]
 	end
 
-	def extract_vars({:ignore, _}, variables) do
+	def extract_vars(:ignore, variables) do
 		variables
 	end
 
