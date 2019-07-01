@@ -26,6 +26,15 @@ defmodule Eager do
 	  end
 	end
 
+	def eval_expr({:case, expr, cls}, env) do
+		case eval_expr(expr, env) do
+			:error ->
+				:error
+			{:ok, _} ->
+				eval_cls()
+		end
+	end
+
 	def eval_match(:ignore, _, env) do
 		{:ok, env}
 	end
@@ -58,6 +67,8 @@ defmodule Eager do
 	def eval_match(_, _, _) do
 		:fail
 	end
+
+	def eval_cls()
 
 	def eval_seq([{:match, id, str} = pattern | rest], env) do
 		case eval_expr(str, env) do
