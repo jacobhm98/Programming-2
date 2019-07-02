@@ -30,9 +30,25 @@ defmodule Eager do
 		case eval_expr(expr, env) do
 			:error ->
 				:error
-			{:ok, _} ->
-				eval_cls()
+			{:ok, str} ->
+				eval_cls(cls, str, env)
 		end
+	end
+
+	def eval_cls([], _, _) do
+  		:error
+	end
+
+	def eval_cls([{:clause, ptr, seq} | cls], str, env) do
+ 		 ...
+ 		 ...
+ 		case ... do
+    		:fail ->
+    		  eval_cls(..., ..., ...)
+
+    		{:ok, env} ->
+     			 eval_seq(..., ...)
+ 		end
 	end
 
 	def eval_match(:ignore, _, env) do
@@ -67,8 +83,6 @@ defmodule Eager do
 	def eval_match(_, _, _) do
 		:fail
 	end
-
-	def eval_cls()
 
 	def eval_seq([{:match, id, str} = pattern | rest], env) do
 		case eval_expr(str, env) do
