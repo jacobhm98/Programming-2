@@ -40,14 +40,14 @@ defmodule Eager do
 	end
 
 	def eval_cls([{:clause, ptr, seq} | cls], str, env) do
- 		 ...
- 		 ...
- 		case ... do
+ 		clause_str = eval_expr(ptr)
+ 		 match = eval_match(clause_str, str, env)
+ 		case match do
     		:fail ->
-    		  eval_cls(..., ..., ...)
+    		  eval_cls(cls, str, env)
 
     		{:ok, env} ->
-     			 eval_seq(..., ...)
+     			 eval_seq(seq, env)
  		end
 	end
 
