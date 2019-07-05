@@ -42,6 +42,9 @@ defmodule Eager do
 	def eval_cls([{:clause, ptr, seq} | cls], str, env) do
  		{_, clause_str} = eval_expr(ptr, env)
  		 match = eval_match(str, clause_str, env)
+ 		 IO.puts(str)
+ 		 IO.puts(clause_str)
+ 		 IO.puts(match)
  		case match do
     		:fail ->
     		  eval_cls(cls, str, env)
