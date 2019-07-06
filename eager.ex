@@ -26,6 +26,30 @@ defmodule Eager do
 	  end
 	end
 
+	def eval_expr({:lambda, par, free, seq}, env) do
+ 		case Env.closure(free, env) do
+  			:error ->
+  				:error
+   			closure ->
+   				{:ok, {:closure, par, seq, env}}
+  		end
+	end
+
+	def eval_expr({:apply, expr, args}, ...) do
+		case ... do
+    		:error ->
+      			:error
+    		{:ok, {:closure, par, seq, closure}} ->
+      			case ... do
+        			:error ->
+          				:foo
+        			strs ->
+          				env = Env.args(par, strs, closure)
+          				eval_seq(seq, env)
+      end
+  end
+end
+
 	def eval_expr({:case, expr, cls}, env) do
 		case eval_expr(expr, env) do
 			:error ->
@@ -156,5 +180,9 @@ defmodule Env do
 	def remove(ids, env) do
 		List.foldr(ids, env, 
 			fn(id, env) -> List.keydelete(env, id, 0) end)
+	end
+
+	def closure (free, env) do
+		
 	end
 end
