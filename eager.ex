@@ -31,7 +31,7 @@ defmodule Eager do
   			:error ->
   				:error
    			closure ->
-   				{:ok, {:closure, par, seq, env}}
+   				{:ok, {:closure, par, seq, closure}}
   		end
 	end
 
@@ -182,7 +182,7 @@ defmodule Env do
 			fn(id, env) -> List.keydelete(env, id, 0) end)
 	end
 
-	def closure (free, env) do
+	def closure ([h|t], env) do
 		
 	end
 end
