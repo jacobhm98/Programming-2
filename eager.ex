@@ -194,7 +194,7 @@ defmodule Env do
 						:nil ->
 							:error
 					end
-
+				end
 			end)
 	end
 end
