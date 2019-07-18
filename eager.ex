@@ -40,7 +40,7 @@ defmodule Eager do
     		:error ->
       			:error
     		{:ok, {:closure, par, seq, closure}} ->
-      			case eval_seq(args) do
+      			case eval_arguments(args) do
         			:error ->
           				:foo
         			strs ->
@@ -151,6 +151,21 @@ end
 
 	def eval(seq) do
 		eval_seq(seq, [])
+	end
+	def eval_arguments([], env) do [] end
+	def eval_arguments([h|t], env) do
+		case eval_expr(h) do
+			:error ->
+				:error
+			{:ok, str} ->
+				case eval_arguments(t, env) do
+					:error ->
+						:error
+					rest ->
+						[str|rest]
+
+				end
+		end
 	end
 
 		
