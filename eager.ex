@@ -182,7 +182,19 @@ defmodule Env do
 			fn(id, env) -> List.keydelete(env, id, 0) end)
 	end
 
-	def closure ([h|t], env) do
-		
+	def closure (keys, env) do
+		List.foldr(keys, [], fn(key, acc) ->
+			case acc do
+				:error ->
+					:error
+				closure ->
+					case Env.lookup(key, env) do
+						{key, str} ->
+							[{key, str}|closure]
+						:nil ->
+							:error
+					end
+
+			end)
 	end
 end
