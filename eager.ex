@@ -35,12 +35,12 @@ defmodule Eager do
   		end
 	end
 
-	def eval_expr({:apply, expr, args}, ...) do
-		case ... do
+	def eval_expr({:apply, expr, args}, env) do
+		case eval_expr(exprs, env) do
     		:error ->
       			:error
     		{:ok, {:closure, par, seq, closure}} ->
-      			case ... do
+      			case eval_seq(args) do
         			:error ->
           				:foo
         			strs ->
@@ -196,5 +196,8 @@ defmodule Env do
 					end
 				end
 			end)
+	end
+	def args(par, strs, env) do
+		
 	end
 end
