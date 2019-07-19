@@ -36,11 +36,11 @@ defmodule Eager do
 	end
 
 	def eval_expr({:apply, expr, args}, env) do
-		case eval_expr(exprs, env) do
+		case eval_expr(expr, env) do
     		:error ->
       			:error
     		{:ok, {:closure, par, seq, closure}} ->
-      			case eval_arguments(args) do
+      			case eval_arguments(args, env) do
         			:error ->
           				:foo
         			strs ->
@@ -154,7 +154,7 @@ end
 	end
 	def eval_arguments([], env) do [] end
 	def eval_arguments([h|t], env) do
-		case eval_expr(h) do
+		case eval_expr(h, env) do
 			:error ->
 				:error
 			{:ok, str} ->
@@ -197,7 +197,7 @@ defmodule Env do
 			fn(id, env) -> List.keydelete(env, id, 0) end)
 	end
 
-	def closure (keys, env) do
+	def closure(keys, env) do
 		List.foldr(keys, [], fn(key, acc) ->
 			case acc do
 				:error ->
@@ -212,7 +212,10 @@ defmodule Env do
 				end
 			end)
 	end
-	def args(par, strs, env) do
-		
+	def args([], [], env) do env end
+	def args([h|t], [str|rest], env) do
+		args(t, rest, add(h, str, env))
 	end
+	def args([], _, env) do :error end
+	def args(_, [], env) do :error end
 end
