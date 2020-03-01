@@ -16,15 +16,28 @@ defmodule Chopstick do
 
   def gone() do
     receive do
-      :return -> available()
+      {:return, from} ->
+        send(from, {:returned, self()})
+        available()
       :quit -> :ok
     end
   end
 
   def request(stick) do
-    send (stick, {:request, self()}
+    send(stick, {:request, self()})
     receive do
-      {:granted, stick) -> :ok
+      {:granted, stick} -> :ok
     end
   end
+
+  def return(stick) do
+    send(stick, {:return, self()})
+    receive do
+      {:returned, stick} -> :ok
+    end
+  end
+  def quit(stick) do
+    send(stick, :quit)
+  end
+
 end
